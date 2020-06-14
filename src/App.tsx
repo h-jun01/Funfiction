@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from "react";
+import Layout from "./containers/Layout";
+import ScrollToTopOnMount from "./components/ScrollToTopOnMount";
+import "./styles/App.scss";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { pages, PageItem } from "./components/config/RouterData";
+import {
+  Route,
+  Switch,
+  withRouter,
+  RouteComponentProps
+} from "react-router-dom";
 
-const App: React.FC = () => {
+const App: React.FC<RouteComponentProps> = ({ location }) => {
+  const currentkey: string = location.pathname.split("/")[1] || "";
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <TransitionGroup>
+        <CSSTransition key={currentkey} classNames="fade" timeout={210}>
+          <React.Fragment>
+            <ScrollToTopOnMount />
+            <Switch location={location}>
+              {pages.map((page: PageItem, index: number) => (
+                <Route
+                  key={index}
+                  exact={page.exact}
+                  path={page.path}
+                  component={page.component}
+                />
+              ))}
+            </Switch>
+          </React.Fragment>
+        </CSSTransition>
+      </TransitionGroup>
+    </Layout>
   );
-}
+};
 
-export default App;
+export default withRouter(App);

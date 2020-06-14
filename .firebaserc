@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "hew-fansa"
+  },
+  "targets": {
+    "hew-fansa": {
+      "hosting": {
+        "hew-fansa": [
+          "funfiction"
+        ],
+        "funfiction": [
+          "hew-fansa"
+        ]
+      }
+    }
+  }
+}

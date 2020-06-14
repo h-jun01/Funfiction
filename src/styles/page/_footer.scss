@@ -1,0 +1,31 @@
+$Footer_white: #fff;
+$Footer_black: #000;
+
+.Footer_wrap {
+  background-color: $Footer_black;
+  color: $Footer_white;
+}
+
+.Footer_border {
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+  font-size: 20px;
+}
+
+.Footer_btn {
+  display: block;
+  width: 70%;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+.copyright {
+  text-align: center;
+  // border-top: 2px dotted #fff;
+  margin: 0 20px;
+  padding: 17px 0;
+  font-size: 0.7rem;
+}
