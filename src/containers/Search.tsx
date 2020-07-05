@@ -5,7 +5,7 @@ import { Action, Dispatch } from "redux";
 import { clearState } from "../actions/navigation";
 import { titleChange } from "../actions/navigation";
 import { setSearchResultPosts } from "../actions/search";
-import { UnionedAction, allState } from "../actions/index";
+import { UnionedAction } from "../actions/index";
 
 interface ContainerSearchIProps {
   searchResultPosts: Array<IKeys>;
@@ -25,7 +25,7 @@ const ContainerSearch: React.FC<ContainerSearchIProps> = ({
   searchResultPosts,
   clearState,
   titleChange,
-  setSearchResultPosts
+  setSearchResultPosts,
 }) => {
   React.useEffect((): void => {
     clearState();
@@ -47,7 +47,7 @@ const ContainerSearch: React.FC<ContainerSearchIProps> = ({
     let tempResults: Array<object> = [];
     await index
       .search({
-        query: e.target.value
+        query: e.target.value,
       })
       .then((responses: { hits: [object] }) => {
         tempResults = responses.hits;
@@ -65,9 +65,9 @@ const ContainerSearch: React.FC<ContainerSearchIProps> = ({
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    searchResultPosts: state.searchReducer.searchResultPosts
+    searchResultPosts: state.searchReducer.searchResultPosts,
   };
 };
 
@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   clearState: () => dispatch(clearState()),
   titleChange: (title: string) => dispatch(titleChange(title)),
   setSearchResultPosts: (result: Array<object>) =>
-    dispatch(setSearchResultPosts(result))
+    dispatch(setSearchResultPosts(result)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContainerSearch);

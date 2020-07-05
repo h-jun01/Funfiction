@@ -1,23 +1,19 @@
 import { actionTypes, UnionedAction } from "../actions/index";
-import { Reducer } from "react";
 
-interface searchIState {
-  searchResultPosts: Array<object>;
+interface InitalState {
+  searchResultPosts: object[];
 }
 
-const initialstate: searchIState = {
-  searchResultPosts: []
+const initialstate: InitalState = {
+  searchResultPosts: [],
 };
 
-export const searchReducer: Reducer<searchIState, UnionedAction> = (
-  state = initialstate,
-  action: UnionedAction
-) => {
+export const searchReducer = (state = initialstate, action: UnionedAction) => {
   switch (action.type) {
     case actionTypes.USER_SEARCH:
       return {
         ...state,
-        searchResultPosts: action.payload.searchResultPosts
+        searchResultPosts: action.payload.searchResultPosts,
       };
     default:
       return state;

@@ -4,8 +4,6 @@
 
 .user_wrap {
   display: flex;
-  // align-items: center;
-  // justify-content: center;
   box-shadow: 0px 4px 2px -2px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   padding: 20px 0;
@@ -68,8 +66,12 @@
   color: #fff;
   font-size: 0.9rem;
   text-align: center;
-  width: 50vw;
+  width: 160px;
   height: 31px;
+  &:disabled {
+    background-color: #ccc;
+    box-shadow: 2px 2px 4px inset #b0b0b0;
+  }
 }
 
 .user_box {
@@ -87,7 +89,8 @@
   }
 }
 
-.user_information {
+.user_information,
+.user_point_history {
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
   padding: 12px 0;
@@ -121,7 +124,6 @@
 .user_post,
 .user_contact {
   border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
   width: 100%;
   padding: 12px 0;
   i {
@@ -204,3 +206,15 @@
   color: red;
   margin-top: 5px;
 }
+
+// .stretched_link {
+//   position: absolute;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 1;
+//   pointer-events: auto;
+//   content: "";
+//   background-color: rgba(0, 0, 0, 0);
+// }

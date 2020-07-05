@@ -4,22 +4,24 @@ import { NavLink } from "react-router-dom";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import CircularProgress from "@material-ui/core/CircularProgress";
 // import Button from "@material-ui/core/Button";
 
 interface RegisteIProps {
-  userCreate: () => void;
   open: boolean;
+  createStatus: string;
+  mailMessage: string;
+  nameMessage: string;
+  passMessage: string;
+  disabled: boolean;
+  load: boolean;
+  userCreate: () => void;
   handleOpen: () => void;
   handleClose: () => void;
   authOpen: () => void;
   EmailHandleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   PasswdHandleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   NameHandleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  createStatus: string;
-  mailMessage: string;
-  nameMessage: string;
-  passMessage: string;
-  disabled: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,7 +46,6 @@ const Registe: React.FC<RegisteIProps> = ({ ...props }) => {
   return (
     <React.Fragment>
       <div onClick={props.handleOpen}>
-        <i className="fas fa-user-plus"></i>
         <p>新規登録</p>
       </div>
       <Modal
@@ -100,26 +101,21 @@ const Registe: React.FC<RegisteIProps> = ({ ...props }) => {
               <p className="error_message">{props.passMessage}</p>
               <br />
             </form>
-            {/* <button onClick={props.userCreate} className="auth_button">
-              {props.createStatus}
-            </button> */}
-            <button
-              onClick={props.userCreate}
-              className="new-button"
-              disabled={props.disabled}
-            >
-              <div className="new-kaiten"></div>
-              <span
-                className="new-dekoi"
-                id="new-check"
-                style={{ color: "#fff" }}
-              >
-                ✔
-              </span>
-              <div className="support_submit_wrap" id="kesu2">
-                新規登録
+            {props.load ? (
+              <div className="load">
+                <CircularProgress color="secondary" />
               </div>
-            </button>
+            ) : (
+              <button
+                onClick={props.userCreate}
+                className="auth_button"
+                disabled={props.disabled}
+              >
+                <div className="support_submit_wrap" id="kesu2">
+                  新規登録
+                </div>
+              </button>
+            )}
             <p className="not_have">
               すでにアカウントをお持ちですか？&nbsp;
               <span

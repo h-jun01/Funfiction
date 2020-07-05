@@ -4,6 +4,16 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
+export interface AcceptanceItem {
+  userName: string;
+  date: string;
+  Point: number;
+}
+
+interface AcceptanceIProps {
+  acceptance: AcceptanceItem[];
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     modal: {
@@ -25,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Information: React.FC = () => {
+const Acceptance: React.FC<AcceptanceIProps> = ({ ...props }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -40,7 +50,7 @@ const Information: React.FC = () => {
   return (
     <React.Fragment>
       <div onClick={handleOpen}>
-        <p>お知らせ</p>
+        <p>受け取りBOX</p>
       </div>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -56,8 +66,28 @@ const Information: React.FC = () => {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h2 id="transition-modal-title">お知らせ</h2>
-            <p className="no_history">お知らせはありません。</p>
+            <h2 id="transition-modal-title">受け取りBOX</h2>
+            <div className={classes.box}>
+              {props.acceptance.length !== 0 ? (
+                props.acceptance.map((item: AcceptanceItem, index: number) => (
+                  <div className="history_box" key={index}>
+                    <p className="history_name">
+                      {item.userName}さんから受け取り
+                    </p>
+                    <p className="history_date">{item.date}</p>
+                    <div className="done_point">
+                      <p className="done">受け取り完了</p>
+                      <p className="point">
+                        {item.Point}
+                        <span>p</span>
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="no_history">受け取り履歴がありません。</p>
+              )}
+            </div>
           </div>
         </Fade>
       </Modal>
@@ -65,4 +95,4 @@ const Information: React.FC = () => {
   );
 };
 
-export default Information;
+export default Acceptance;

@@ -7,7 +7,7 @@ import { Action, Dispatch } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { setSearchResultPosts } from "../actions/search";
-import { UnionedAction, allState } from "../actions/index";
+import { UnionedAction } from "../actions/index";
 
 interface HeaderIProps {
   history: H.History;
@@ -35,7 +35,7 @@ const ContainerHeader: React.FC<HeaderIProps> = ({ ...props }) => {
       let tempResults: Array<object> = [];
       await index
         .search({
-          query: e.target.value
+          query: e.target.value,
         })
         .then((responses: { hits: [object] }) => {
           tempResults = responses.hits;
@@ -68,18 +68,18 @@ const ContainerHeader: React.FC<HeaderIProps> = ({ ...props }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     backButton: state.navigationReducer.backButton,
     headerBar: state.navigationReducer.headerBar,
     headerTitle: state.navigationReducer.headerTitle,
-    searchResultPosts: state.searchReducer.searchResultPosts
+    searchResultPosts: state.searchReducer.searchResultPosts,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   setSearchResultPosts: (result: Array<object>) =>
-    dispatch(setSearchResultPosts(result))
+    dispatch(setSearchResultPosts(result)),
 });
 
 export default withRouter(

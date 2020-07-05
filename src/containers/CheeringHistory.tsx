@@ -1,17 +1,23 @@
 import * as React from "react";
 import { db } from "../firebase/firebase";
 import { connect } from "react-redux";
-import Acceptance, { AcceptanceItem } from "../components/Acceptance";
+import CheeringHistory, {
+  CheeringHistoryItem,
+} from "../components/CheeringHistory";
 import { allState } from "../actions/index";
 
-interface ContainerAcceptanceIProps {
+interface ContainerCheeringHistoryIProps {
   uid: string;
 }
 
-const ContainerAcceptance: React.FC<ContainerAcceptanceIProps> = ({ uid }) => {
-  const [acceptance, setAcceptance] = React.useState<AcceptanceItem[]>([]);
+const ContainerCheeringHistory: React.FC<ContainerCheeringHistoryIProps> = ({
+  uid,
+}) => {
+  const [cheeringHistory, setCheeringHistory] = React.useState<
+    CheeringHistoryItem[]
+  >([]);
   React.useEffect(() => {
-    let acceptance: AcceptanceItem[] = [];
+    let cheeringHistory: CheeringHistoryItem[] = [];
     const getFireData = async () => {
       const querySnapshot = await db
         .collection("users")
@@ -21,18 +27,18 @@ const ContainerAcceptance: React.FC<ContainerAcceptanceIProps> = ({ uid }) => {
       querySnapshot.forEach((doc) => {
         if (doc.data().presentHistory) {
           for (let i = 0; i < doc.data().presentHistory.length; i++) {
-            if (doc.data().presentHistory[i].FORorTO === "TO") {
-              acceptance.push(doc.data().presentHistory[i]);
+            if (doc.data().presentHistory[i].FORorTO === "FOR") {
+              cheeringHistory.push(doc.data().presentHistory[i]);
             }
           }
         }
       });
-      setAcceptance(acceptance);
+      setCheeringHistory(cheeringHistory);
     };
     getFireData();
   }, [uid]);
 
-  return <Acceptance acceptance={acceptance} />;
+  return <CheeringHistory cheeringHistory={cheeringHistory} />;
 };
 
 const mapStateToProps = (state: allState) => {
@@ -41,4 +47,4 @@ const mapStateToProps = (state: allState) => {
   };
 };
 
-export default connect(mapStateToProps)(ContainerAcceptance);
+export default connect(mapStateToProps)(ContainerCheeringHistory);

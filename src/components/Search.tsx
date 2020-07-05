@@ -12,7 +12,7 @@ export interface IKeys {
 interface SearchIProps {
   onSearch: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   hideTrend: () => void;
-  searchResultPosts: Array<IKeys>;
+  searchResultPosts: IKeys[];
   trend: boolean;
 }
 

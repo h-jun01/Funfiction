@@ -1,7 +1,11 @@
 import { actionTypes, UnionedAction } from "../actions/index";
+import { BookData } from "./bookExplanationReducer";
 
-const initialstate = {
-  favoriteArray: []
+interface InitalState {
+  favoriteArray: BookData[];
+}
+const initialstate: InitalState = {
+  favoriteArray: [],
 };
 
 export const libraryReducer = (state = initialstate, action: UnionedAction) => {
@@ -9,7 +13,7 @@ export const libraryReducer = (state = initialstate, action: UnionedAction) => {
     case actionTypes.SYSTEM_FAVORITE_STATUS:
       return {
         ...state,
-        favoriteArray: action.payload.favoriteArray
+        favoriteArray: action.payload.favoriteArray,
       };
     default:
       return state;

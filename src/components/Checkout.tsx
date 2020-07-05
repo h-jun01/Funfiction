@@ -15,8 +15,8 @@ interface CheckoutIProps {
 }
 
 const stripeApiKey: any = process.env.REACT_APP_STRIPE_API_KEY;
-// const stripeApiKey = "pk_test_lVNbW4jcYVkypLamvOcQKnis00i7knSqXk";
-const checkoutUrl = "https://us-central1-hew-fansa.cloudfunctions.net/charge";
+const checkoutUrl =
+  "https://us-central1-hew-funfiction.cloudfunctions.net/charge";
 
 const Checkout: React.FC<CheckoutIProps> = ({
   price,

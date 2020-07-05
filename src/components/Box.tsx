@@ -5,10 +5,8 @@ import { IKeys } from "./Home";
 
 interface BoxIProps {
   topic: string;
-  more: string;
   component: React.FC<CardLayoutIProps>;
   array: IKeys[];
-  details: string[];
   grid: string;
 }
 
@@ -17,7 +15,7 @@ const Box: React.FC<BoxIProps> = ({ ...props }) => {
     <section className={props.grid}>
       <div className="box_wrap">
         <h2 className="box_title">{props.topic}</h2>
-        <NavLink exact to={props.more}>
+        <NavLink exact to="books/comics">
           <div className="box_more">
             <p className="box_more_all">すべて表示</p>
             <i className="fas fa-chevron-right"></i>
@@ -25,7 +23,7 @@ const Box: React.FC<BoxIProps> = ({ ...props }) => {
         </NavLink>
       </div>
       <div>
-        <props.component array={props.array} details={props.details} />
+        <props.component array={props.array} />
       </div>
     </section>
   );

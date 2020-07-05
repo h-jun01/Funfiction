@@ -2,7 +2,8 @@ import * as React from "react";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import HeaderSearchModal from "./HeaderSearchModal";
-import TemporaryDrawer from "./TemporaryDrawer";
+import TemporaryDrawer from "../containers/TemporaryDrawer";
+import FavoriteRoundedIcon from "@material-ui/icons/FavoriteRounded";
 import { IKeys } from "./Search";
 import { NavLink } from "react-router-dom";
 
@@ -29,7 +30,13 @@ const Header: React.FC<HeaderIProps> = ({ ...props }) => {
               <ArrowBackIosRoundedIcon onClick={props.back} />
             )}
           </nav>
-          <h1>{props.headerTitle}</h1>
+          {props.headerTitle === "Funfiction" ? (
+            <h1>
+              <img src="/icons/logo_fin.png" alt="logo" width="100" />
+            </h1>
+          ) : (
+            <h1>{props.headerTitle}</h1>
+          )}
           <nav className="header_search">
             <NavLink to="/Search" activeClassName="active">
               <SearchRoundedIcon />
@@ -38,22 +45,31 @@ const Header: React.FC<HeaderIProps> = ({ ...props }) => {
         </header>
       )}
 
-      <header className="pc_header">
-        <div className="pc_header_items">
-          <TemporaryDrawer />
-          <h1>Funfiction</h1>
-          <div className="pc_search">
-            <input
-              type="text"
-              placeholder="&#xf002; 作品名・作者名で検索"
-              onChange={props.onSearch}
-              onClick={() => {
-                props.setModal(true);
-              }}
-            />
+      {props.headerBar && (
+        <header className="pc_header">
+          <div className="pc_header_items">
+            <TemporaryDrawer />
+            <h1>
+              <img src="/icons/logo_fin.png" alt="logo" width="150" />
+            </h1>
+            <div className="pc_search">
+              <input
+                type="text"
+                placeholder="&#xf002; 作品名・作者名で検索"
+                onChange={props.onSearch}
+                onClick={() => {
+                  props.setModal(true);
+                }}
+              />
+            </div>
           </div>
-        </div>
-      </header>
+          <div className="pc_favorite">
+            <NavLink to="/Library">
+              <FavoriteRoundedIcon />
+            </NavLink>
+          </div>
+        </header>
+      )}
 
       <HeaderSearchModal
         modal={props.modal}

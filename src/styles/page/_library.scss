@@ -1,5 +1,5 @@
 .library_height {
-  min-height: 79vh;
+  min-height: 100vh;
 }
 
 .library_layout {
@@ -84,4 +84,35 @@
   top: 50%;
   transform: translateY(-50%);
   text-align: center;
+}
+
+/***************     PC     ***************/
+@include screen-mq(pc) {
+  .library_layout {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    letter-spacing: 0.1em;
+    padding: 1.4vh 1.3vw 0;
+  }
+
+  .library_box {
+    margin-bottom: 1.3vh;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px #ccc;
+    width: 14vw;
+  }
+
+  .library_wrap {
+    img {
+      height: 20vh;
+      width: 14vw;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      object-fit: cover;
+      object-position: 50% 20%;
+    }
+  }
 }

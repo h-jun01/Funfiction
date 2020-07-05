@@ -8,7 +8,7 @@ import {
   Route,
   Switch,
   withRouter,
-  RouteComponentProps
+  RouteComponentProps,
 } from "react-router-dom";
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {

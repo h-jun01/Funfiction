@@ -39,13 +39,11 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
   authHandleChange,
   ...props
 }) => {
-  const [mailCheck, setMailCheck] = React.useState<boolean>(false);
-  const [nameCheck, setNameCheck] = React.useState<boolean>(false);
-  const [passCheck, setPassCheck] = React.useState<boolean>(false);
   const [mailMessage, setMailMessage] = React.useState<string>("");
   const [nameMessage, setNameMessage] = React.useState<string>("");
   const [passMessage, setPassMessage] = React.useState<string>("");
   const [disabled, setDisabled] = React.useState<boolean>(true);
+  const [load, setLoad] = React.useState<boolean>(false);
 
   const handleOpen = (): void => {
     actionHandleChange(true);
@@ -58,6 +56,16 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
     authHandleChange(true);
   };
 
+  React.useEffect(() => {
+    if (
+      props.emailInput !== "" &&
+      props.nameInput !== "" &&
+      props.passwdInput !== ""
+    ) {
+      setDisabled(false);
+    }
+  }, [props.emailInput, props.nameInput, props.passwdInput]);
+
   const EmailHandleOnChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -65,21 +73,13 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
     if (e.currentTarget.value !== "") {
       if (e.currentTarget.value.match(REGEX_EMAIL)) {
         setEmailInput(e.currentTarget.value);
-        setMailCheck(true);
         setMailMessage("");
-        if (mailCheck && nameCheck && passCheck) {
-          setDisabled(false);
-        } else {
-          setDisabled(true);
-        }
       } else {
         setMailMessage("メールアドレスの形式が不正です");
-        setMailCheck(false);
         setDisabled(true);
       }
     } else {
       setMailMessage("メールアドレスを入力してください");
-      setMailCheck(false);
       setDisabled(true);
     }
   };
@@ -87,16 +87,9 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
   const NameHandleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.currentTarget.value !== "") {
       setNameInput(e.currentTarget.value);
-      setNameCheck(true);
       setNameMessage("");
-      if (mailCheck && nameCheck && passCheck) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
     } else {
       setNameMessage("ユーザ名を入力してください");
-      setNameCheck(false);
       setDisabled(true);
     }
   };
@@ -107,69 +100,31 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
     if (e.currentTarget.value !== "") {
       if (e.currentTarget.value.length >= 6) {
         setPasswdInput(e.currentTarget.value);
-        setPassCheck(true);
         setPassMessage("");
-        if (mailCheck && nameCheck && passCheck) {
-          setDisabled(false);
-        } else {
-          setDisabled(true);
-        }
       } else {
         setPassMessage("パスワードは6文字以上で入力してください");
-        setPassCheck(false);
         setDisabled(true);
       }
     } else {
       setPassMessage("パスワードを入力してください");
-      setPassCheck(false);
       setDisabled(true);
     }
   };
 
   const userCreate = async () => {
+    setLoad(true);
     const email = props.emailInput;
     const Name = props.nameInput;
     const passwd = props.passwdInput;
-    const nowDate: string = datetime();
+    // const nowDate: string = datetime();
     const snap: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData> = await db
       .collection("users")
       .get();
     const size: number = snap.size;
 
-    if (
-      document
-        .getElementsByClassName("new-button")[0]
-        .classList.contains("new-loading")
-    ) {
-      document
-        .getElementsByClassName("new-button")[0]
-        .classList.remove("new-loading");
-      document
-        .getElementsByClassName("new-kaiten")[0]
-        .classList.remove("new-spinner");
-      document
-        .getElementsByClassName("new-dekoi")[0]
-        .classList.remove("new-check");
-      document.getElementById("new-check")!.style.display = "none";
-      document.getElementById("kesu2")!.style.display = "inline";
-    } else {
-      document
-        .getElementsByClassName("new-button")[0]
-        .classList.add("new-loading");
-      document
-        .getElementsByClassName("new-kaiten")[0]
-        .classList.add("new-spinner");
-      document
-        .getElementsByClassName("new-dekoi")[0]
-        .classList.add("new-check");
-      document.getElementById("new-check")!.style.display = "inline";
-      document.getElementById("kesu2")!.style.display = "none";
-    }
-
     auth
       .createUserWithEmailAndPassword(email, passwd)
       .then((d) => {
-        console.log("Success");
         db.collection("users")
           .add({
             ID: size + 1, //ユーザーID
@@ -182,35 +137,30 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
             acceptancePoint: 0, //受け取り総額
             settlement: 0, //決済総額
             favorite: [],
-            createTime: nowDate,
-            updateTime: nowDate,
-          })
-          .then(() => {
-            console.log("書き込み成功");
+            createTime: datetime(),
+            updateTime: datetime(),
           })
           .catch((err) => {
+            setLoad(false);
             console.log(err);
           });
         auth
           .signInWithEmailAndPassword(email, passwd)
           .then(() => {
-            console.log("ログイン成功");
+            setLoad(false);
             handleClose();
-            setMailCheck(false);
-            setNameCheck(false);
-            setPassCheck(false);
             setDisabled(true);
           })
           .catch((err) => {
-            console.log("サインイン失敗!");
             console.log(err);
-            setMailCheck(false);
-            setNameCheck(false);
-            setPassCheck(false);
+            setLoad(false);
             setDisabled(true);
           });
       })
       .catch((err) => {
+        setMailMessage("既に登録済みのメールアドレスです。");
+        setLoad(false);
+        setDisabled(true);
         console.log(err);
       });
   };
@@ -231,6 +181,7 @@ const ContainerRegiste: React.FC<ContainerRegisteIProps> = ({
         nameMessage={nameMessage}
         passMessage={passMessage}
         disabled={disabled}
+        load={load}
       />
     </React.Fragment>
   );

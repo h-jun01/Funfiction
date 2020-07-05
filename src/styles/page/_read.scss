@@ -53,6 +53,7 @@
 .finish_page {
   float: left;
   width: 100%;
+  height: 100%;
   scroll-snap-align: center;
   scroll-snap-stop: always;
 }
@@ -113,6 +114,61 @@
   animation: under_in 0.2s linear forwards;
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+.share {
+  max-width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20vh;
+  div {
+    width: 200px;
+    margin: 0 auto 20px;
+  }
+}
+
+.twitter {
+  display: flex;
+  background-color: #00acee;
+  height: 40px;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin: 20px 0;
+  i {
+    // margin-left: 10px;
+    line-height: 20px;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+  }
+  p {
+    color: #fff;
+    line-height: 20px;
+  }
+}
+
+.facebooook {
+  display: flex;
+  background-color: #3b5998;
+  height: 40px;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin: 20px 0;
+  i {
+    margin-left: 10px;
+    line-height: 20px;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+  }
+  p {
+    color: #fff;
+    line-height: 20px;
+  }
 }
 
 input[type="range"] {
@@ -248,35 +304,7 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
   }
 }
 
-.finish_page {
-  p {
-    max-width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-.okinituika {
-  display: flex;
-  background-color: #ec772f;
-  height: 40px;
-  width: 200px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  margin: 20px 0;
-  i {
-    color: #fff;
-    width: 20px;
-    height: 20px;
-  }
-  p {
-    color: #fff;
-    line-height: 20px;
-  }
-}
-
-.tuita {
+.twitter {
   display: flex;
   background-color: #00acee;
   height: 40px;
@@ -286,12 +314,16 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
   border-radius: 5px;
   margin: 20px 0;
   i {
+    margin-left: 10px;
+    line-height: 20px;
     color: #fff;
     width: 20px;
     height: 20px;
   }
   p {
-    color: #fff;
+    a {
+      color: #fff;
+    }
     line-height: 20px;
   }
 }
@@ -306,12 +338,16 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
   border-radius: 5px;
   margin: 20px 0;
   i {
+    margin-left: 10px;
+    line-height: 20px;
     color: #fff;
     width: 20px;
     height: 20px;
   }
   p {
-    color: #fff;
+    a {
+      color: #fff;
+    }
     line-height: 20px;
   }
 }

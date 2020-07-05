@@ -38,7 +38,7 @@
 }
 
 .auth_button {
-  margin-top: $user_form_margin_top;
+  margin-top: 10px;
   height: $user_form_height;
   border-radius: $user_form_radius;
   width: $user_login_button_width;
@@ -47,6 +47,26 @@
   background-color: #ec772f;
   color: #fff;
   font-size: 0.9rem;
+  &:disabled {
+    background-color: #ccc;
+    box-shadow: 2px 2px 4px inset #b0b0b0;
+  }
+}
+
+.load {
+  text-align: center;
+}
+
+.support_load {
+  text-align: center;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  // padding: 10px;
+  z-index: 2000;
+  margin-bottom: constant(safe-area-inset-bottom);
+  margin-bottom: env(safe-area-inset-bottom);
 }
 
 .auth_text_box {
@@ -131,5 +151,75 @@
   margin-top: 20px;
   span {
     color: #0085d5;
+  }
+}
+
+/***************     タブレット     ***************/
+@include screen-mq(tab) {
+  .auth_form {
+    input[type="text"],
+    input[type="password"] {
+      width: 300px;
+    }
+  }
+
+  .auth_button {
+    width: 320px;
+  }
+
+  .auth_twitter_button {
+    width: 320px;
+  }
+
+  .auth_text_box {
+    width: 300px;
+    margin: 0;
+  }
+
+  .another_login {
+    width: 320px;
+  }
+
+  .not_have {
+    width: 320px;
+  }
+
+  .notes {
+    width: 320px;
+  }
+}
+
+/***************     PC     ***************/
+@include screen-mq(pc) {
+  .auth_form {
+    input[type="text"],
+    input[type="password"] {
+      width: 300px;
+    }
+  }
+
+  .auth_button {
+    width: 320px;
+  }
+
+  .auth_twitter_button {
+    width: 320px;
+  }
+
+  .auth_text_box {
+    width: 300px;
+    margin: 0;
+  }
+
+  .another_login {
+    width: 320px;
+  }
+
+  .not_have {
+    width: 320px;
+  }
+
+  .notes {
+    width: 320px;
   }
 }

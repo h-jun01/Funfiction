@@ -5,15 +5,13 @@ import { IKeys } from "./Home";
 
 interface CardLayoutIProps {
   array: IKeys[];
-  more?: string[];
-  details: any;
 }
 
 const RankingLayout: React.FC<CardLayoutIProps> = ({ ...props }) => {
   return (
     <div className="ranking_layout">
       {props.array.map((item: IKeys, index: number) => (
-        <NavLink to={`/BookExplanation/${props.more}/${item.id}`} key={index}>
+        <NavLink to={`/BookExplanation/comic/${item.id}`} key={index}>
           <Ranking
             crown={item.crown}
             ranknum={index + 1}

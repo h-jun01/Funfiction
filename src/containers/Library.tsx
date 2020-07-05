@@ -3,10 +3,9 @@ import Library from "../components/Library";
 import { connect } from "react-redux";
 import { Action, Dispatch } from "redux";
 import { IKeys } from "../components/Home";
-import { BookData } from "../components/config/BookData";
 import { clearState } from "../actions/navigation";
 import { titleChange } from "../actions/navigation";
-import { UnionedAction, allState } from "../actions/index";
+import { UnionedAction } from "../actions/index";
 
 interface ContainerLibraryIProps {
   favoriteArray: IKeys[];
@@ -41,17 +40,7 @@ const ContainerLibrary: React.FC<ContainerLibraryIProps> = ({
     }
   }, [favoriteArray.length, uid]);
 
-  const more = Object.keys(BookData);
-
-  console.log(favoriteArray);
-
-  return (
-    <Library
-      favoriteBook={favoriteArray}
-      libraryNoData={libraryNoData}
-      more={more}
-    />
-  );
+  return <Library favoriteBook={favoriteArray} libraryNoData={libraryNoData} />;
 };
 
 const mapStateToProps = (state) => {

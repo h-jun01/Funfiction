@@ -1,6 +1,6 @@
 import * as React from "react";
-import BookExplanationList from "../components/BookExplanationList";
 import * as firebase from "firebase/app";
+import BookExplanationList from "../components/BookExplanationList";
 import { RouteComponentProps, withRouter } from "react-router";
 import { connect } from "react-redux";
 import { Action, Dispatch } from "redux";
@@ -9,17 +9,23 @@ import { db, datetime } from "../firebase/firebase";
 import { setFavoriteItem } from "../actions/library";
 import { setPoint } from "../actions/myPage";
 import { setFavButton, setFavStatus } from "../actions/bookExplanation";
+import { setBookData } from "../actions/bookExplanation";
 import { IKeys } from "../components/Home";
 import { UnionedAction, allState } from "../actions/index";
+import { setCommentView } from "../actions/bookExplanation";
 
 type BooksProps = {
+  uid: string;
+  point: number;
   layoutChange: () => UnionedAction;
   setFavoriteItem: (av: number[]) => UnionedAction;
-  uid: string;
   setPoint: (num: number) => UnionedAction;
-  point: number;
   setFavButton: (char: string) => UnionedAction;
   setFavStatus: (boolean: boolean) => UnionedAction;
+  setCommentView: (comment: string) => UnionedAction;
+  setBookData: (
+    array: Array<{ [s: string]: string | number }>
+  ) => UnionedAction;
   favStatus: boolean;
   favButton: string;
   bookData: IKeys;
@@ -37,24 +43,43 @@ const Books: React.FC<BooksProps> = ({
   point,
   setFavButton,
   setFavStatus,
+  setBookData,
   favStatus,
   favButton,
   bookData,
+  setCommentView,
 }) => {
   const targetID: number = match.params.details;
-  const bookDetails: IKeys = bookData[targetID - 1];
+  const bookDetails: any = bookData[targetID - 1];
   const bookDetailsBackGround: string = bookData[targetID - 1].src;
   const bookDetailsComicID: number = bookData[targetID - 1].id;
   const comic_background: React.RefObject<HTMLInputElement> = React.createRef<
     HTMLInputElement
   >();
+  const [load, setLoad] = React.useState<boolean>(false);
+  const [lCheck, setLCheck] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (uid !== "") {
+      setLCheck(false);
+    } else {
+      setLCheck(true);
+    }
+  }, [uid]);
+
+  React.useEffect(() => {
+    if (uid === "") {
+      setFavStatus(false);
+    }
+  }, [uid, setFavStatus]);
+
   React.useEffect(() => {
     layoutChange();
   }, [layoutChange]);
 
   React.useEffect(() => {
     comic_background.current!.style.background = `url(${bookDetailsBackGround}) center / cover`;
-  });
+  }, [bookDetailsBackGround, comic_background]);
 
   React.useEffect(() => {
     db.collection("users")
@@ -62,15 +87,16 @@ const Books: React.FC<BooksProps> = ({
       .orderBy("ID")
       .get()
       .then((d) => {
-        console.log(d.docs[0].data());
-        if (d.docs[0].data().favorite.indexOf(bookDetailsComicID) !== -1) {
-          //お気に入り済ならの処理
-          setFavButton("お気に入り済み");
-          setFavStatus(true);
-        } else {
-          //お気に入りされてない場合
-          setFavButton("お気に入り登録");
-          setFavStatus(false);
+        if (uid !== "") {
+          if (d.docs[0].data().favorite.indexOf(bookDetailsComicID) !== -1) {
+            //お気に入り済ならの処理
+            setFavButton("お気に入り済み");
+            setFavStatus(true);
+          } else {
+            //お気に入りされてない場合
+            setFavButton("お気に入り登録");
+            setFavStatus(false);
+          }
         }
       });
   }, [bookDetailsComicID, uid, setFavButton, setFavStatus]);
@@ -82,107 +108,122 @@ const Books: React.FC<BooksProps> = ({
       .orderBy("ID")
       .get();
 
-    if (
-      querySnapshot.docs[0].data().favorite.indexOf(bookDetailsComicID) !== -1
-    ) {
-      setFavButton("お気に入り登録");
-      setFavStatus(false);
+    if (uid !== "") {
+      if (
+        querySnapshot.docs[0].data().favorite.indexOf(bookDetailsComicID) !== -1
+      ) {
+        setFavButton("お気に入り登録");
+        setFavStatus(false);
 
-      //お気に入り済ならの処理
-      await db
-        .collection("users")
-        .doc(querySnapshot.docs[0].id)
-        .update({
-          favorite: firebase.firestore.FieldValue.arrayRemove(
-            bookDetailsComicID
-          ),
-        });
+        //お気に入り済ならの処理
+        await db
+          .collection("users")
+          .doc(querySnapshot.docs[0].id)
+          .update({
+            favorite: firebase.firestore.FieldValue.arrayRemove(
+              bookDetailsComicID
+            ),
+          });
 
-      //お気に入り更新
-      await db
-        .collection("users")
-        .where("uid", "==", uid)
-        .orderBy("ID")
-        .get()
-        .then(async (d) => {
-          let favoriteArray: number[] = [];
-          for (let i = 0; i < d.docs[0].data().favorite.length; i++) {
-            favoriteArray.push(bookData[d.docs[0].data().favorite[i] - 1]);
-          }
-          await setFavoriteItem(favoriteArray);
-          console.log(favoriteArray);
-        });
+        //お気に入り更新
+        await db
+          .collection("users")
+          .where("uid", "==", uid)
+          .orderBy("ID")
+          .get()
+          .then(async (d) => {
+            let favoriteArray: number[] = [];
+            for (let i = 0; i < d.docs[0].data().favorite.length; i++) {
+              favoriteArray.push(bookData[d.docs[0].data().favorite[i] - 1]);
+            }
+            setFavoriteItem(favoriteArray);
+          });
 
-      //お気に入り数低下
-      await db
-        .collection("books")
-        .where("id", "==", bookDetailsComicID)
-        .get()
-        .then((d) => {
-          const favoriteID = d.docs[0].id;
-          const favoriteNumber: number = d.docs[0].data().favorite;
-          db.collection("books")
-            .doc(favoriteID)
-            .update({
-              favorite: favoriteNumber - 1,
-            });
-        });
-    } else {
-      setFavButton("お気に入り済み");
-      setFavStatus(true);
+        //お気に入り数低下
+        await db
+          .collection("books")
+          .where("id", "==", bookDetailsComicID)
+          .get()
+          .then((d) => {
+            const favoriteID = d.docs[0].id;
+            const favoriteNumber: number = d.docs[0].data().favorite;
+            db.collection("books")
+              .doc(favoriteID)
+              .update({
+                favorite: favoriteNumber - 1,
+              });
+          });
+      } else {
+        setFavButton("お気に入り済み");
+        setFavStatus(true);
 
-      //お気に入りされてない場合(お気に入り追加する処理)
-      await db
-        .collection("users")
-        .doc(querySnapshot.docs[0].id)
-        .update({
-          favorite: firebase.firestore.FieldValue.arrayUnion(
-            bookDetailsComicID
-          ),
-        });
+        //お気に入りされてない場合(お気に入り追加する処理)
+        await db
+          .collection("users")
+          .doc(querySnapshot.docs[0].id)
+          .update({
+            favorite: firebase.firestore.FieldValue.arrayUnion(
+              bookDetailsComicID
+            ),
+          });
 
-      //お気に入り更新
-      await db
-        .collection("users")
-        .where("uid", "==", uid)
-        .orderBy("ID")
-        .get()
-        .then(async (d) => {
-          let favoriteArray: number[] = [];
-          for (let i = 0; i < d.docs[0].data().favorite.length; i++) {
-            favoriteArray.push(bookData[d.docs[0].data().favorite[i] - 1]);
-          }
-          await setFavoriteItem(favoriteArray);
-          console.log(favoriteArray);
-        });
+        //お気に入り更新
+        await db
+          .collection("users")
+          .where("uid", "==", uid)
+          .orderBy("ID")
+          .get()
+          .then(async (d) => {
+            let favoriteArray: number[] = [];
+            for (let i = 0; i < d.docs[0].data().favorite.length; i++) {
+              favoriteArray.push(bookData[d.docs[0].data().favorite[i] - 1]);
+            }
+            setFavoriteItem(favoriteArray);
+          });
 
-      //お気に入り数追加
-      await db
-        .collection("books")
-        .where("id", "==", bookDetailsComicID)
-        .get()
-        .then((d) => {
-          const favoriteID = d.docs[0].id;
-          const favoriteNumber: number = d.docs[0].data().favorite;
-          db.collection("books")
-            .doc(favoriteID)
-            .update({
-              favorite: favoriteNumber + 1,
-            });
-        });
+        //お気に入り数追加
+        await db
+          .collection("books")
+          .where("id", "==", bookDetailsComicID)
+          .get()
+          .then((d) => {
+            const favoriteID = d.docs[0].id;
+            const favoriteNumber: number = d.docs[0].data().favorite;
+            db.collection("books")
+              .doc(favoriteID)
+              .update({
+                favorite: favoriteNumber + 1,
+              });
+          });
+      }
     }
   };
 
   const [choicePoint, setChoicePoint] = React.useState(0);
   const [isDoneModal, setisDoneModal] = React.useState(false);
-  const pointSelection = (num) => {
+  const [eModal, setEModal] = React.useState(false);
+  const [comment, setComment] = React.useState("");
+
+  const pointSelection = (num: number) => {
     setChoicePoint(choicePoint + num);
   };
   const isDoneModalOpen = () => {
     setisDoneModal(true);
+    setLoad(false);
   };
+
+  const getComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setComment(value);
+  };
+
+  const eModalClose = () => {
+    setEModal(false);
+  };
+
   //応援押したとき
-  const support = () => {
+  const support = async () => {
+    setLoad(true);
     db.collection("users")
       .where("uid", "==", uid)
       .orderBy("ID")
@@ -206,38 +247,11 @@ const Books: React.FC<BooksProps> = ({
 
             //100は使う予定のポイント
             if (userPoint < choicePoint) {
-              console.log("ポイント足りない");
+              setLoad(false);
+              setChoicePoint(0);
+              setEModal(true);
+              setTimeout(eModalClose, 3500);
             } else {
-              if (
-                document
-                  .getElementsByClassName("button")[0]
-                  .classList.contains("loading")
-              ) {
-                document
-                  .getElementsByClassName("button")[0]
-                  .classList.remove("loading");
-                document
-                  .getElementsByClassName("kaiten")[0]
-                  .classList.remove("spinner");
-                document
-                  .getElementsByClassName("dekoi")[0]
-                  .classList.remove("check");
-                document.getElementById("check")!.style.display = "none";
-                document.getElementById("kesu")!.style.display = "inline";
-              } else {
-                document
-                  .getElementsByClassName("button")[0]
-                  .classList.add("loading");
-                document
-                  .getElementsByClassName("kaiten")[0]
-                  .classList.add("spinner");
-                document
-                  .getElementsByClassName("dekoi")[0]
-                  .classList.add("check");
-                document.getElementById("check")!.style.display = "inline";
-                document.getElementById("kesu")!.style.display = "none";
-              }
-
               await db
                 .collection("users")
                 .doc(userDocumentID)
@@ -274,8 +288,47 @@ const Books: React.FC<BooksProps> = ({
                 forUser: userName,
                 toUser: creatorName,
               });
-              await setPoint(point - choicePoint);
-              setTimeout(isDoneModalOpen, 2000);
+              setPoint(point - choicePoint);
+              setTimeout(isDoneModalOpen, 1500);
+              setChoicePoint(0);
+
+              await db
+                .collection("users")
+                .where("uid", "==", uid)
+                .orderBy("ID")
+                .get()
+                .then(async (d) => {
+                  const commentUserName: string = await d.docs[0].data().Name;
+                  const commentUserPhoto: string = await d.docs[0].data().src;
+                  await db
+                    .collection("books")
+                    .where("id", "==", bookDetailsComicID)
+                    .get()
+                    .then(async (c) => {
+                      await db
+                        .collection("books")
+                        .doc(c.docs[0].id)
+                        .update({
+                          comment: firebase.firestore.FieldValue.arrayUnion({
+                            date: datetime(),
+                            userName: commentUserName,
+                            src: commentUserPhoto,
+                            comment: comment,
+                          }),
+                        });
+                      await db
+                        .collection("books")
+                        .where("id", "==", bookDetailsComicID)
+                        .get()
+                        .then((d) => {
+                          setCommentView(d.docs[0].data().comment.reverse());
+                        });
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                });
+              setComment("");
             }
           });
       });
@@ -297,6 +350,12 @@ const Books: React.FC<BooksProps> = ({
         choicePoint={choicePoint}
         favStatus={favStatus}
         isDoneModal={isDoneModal}
+        load={load}
+        setisDoneModal={setisDoneModal}
+        getComment={getComment}
+        comment={comment}
+        eModal={eModal}
+        lCheck={lCheck}
       />
     </React.Fragment>
   );
@@ -318,6 +377,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
   setPoint: (num: number) => dispatch(setPoint(num)),
   setFavButton: (char: string) => dispatch(setFavButton(char)),
   setFavStatus: (boolean: boolean) => dispatch(setFavStatus(boolean)),
+  setCommentView: (comment: string) => dispatch(setCommentView(comment)),
+  setBookData: (array: Array<{ [s: string]: string | number }>) =>
+    dispatch(setBookData(array)),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Books));

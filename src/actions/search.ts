@@ -1,9 +1,9 @@
 import { actionTypes } from "./index";
 /***************     Action creator    ***************/
-export const setSearchResultPosts = (result: Array<object>) =>
+export const setSearchResultPosts = (result: object[]) =>
   ({
     type: actionTypes.USER_SEARCH,
     payload: {
-      searchResultPosts: result
-    }
+      searchResultPosts: result,
+    },
   } as const);

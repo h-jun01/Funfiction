@@ -7,8 +7,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import DetailsRecommend from "./DetailsRecommend";
-import { log } from "console";
+import TextField from "@material-ui/core/TextField";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -27,7 +26,9 @@ export interface UserKeys {
 interface FullWidthTabsIProps {
   getComment: (e: React.ChangeEvent<HTMLInputElement>) => void;
   commentAdd: () => void;
+  cancel: () => void;
   commentView: Array<UserKeys>;
+  commentContent: string;
 }
 
 const TabPanel = (props: TabPanelProps) => {
@@ -54,9 +55,24 @@ const a11yProps = (index: any) => {
   };
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#fafafafa",
+  },
+  comment: {
+    "& > *": {
+      width: "100%",
+      [theme.breakpoints.up("md")]: {
+        width: "100%",
+        position: "static",
+      },
+      [theme.breakpoints.up("lg")]: {
+        width: "60%",
+        position: "relative",
+        left: "50%",
+        transform: "translateX(-50%)",
+      },
+    },
   },
 }));
 
@@ -64,6 +80,8 @@ const FullWidthTabs: React.FC<FullWidthTabsIProps> = ({
   getComment,
   commentAdd,
   commentView,
+  cancel,
+  commentContent,
 }) => {
   const classes = useStyles({});
   const theme = useTheme();
@@ -104,34 +122,36 @@ const FullWidthTabs: React.FC<FullWidthTabsIProps> = ({
               今回は平成の終わりと令和の始まりに描いてきた作品たちの総集編です。なかなかこんな風にまとめて出すこともないので詩を織り交ぜてみたんですがどうでしたでしょうか？気に入っていただければ幸いです。これからもいろいろな絵を描き続けていきますので末長くよろしく願いします。
             </p>
           </div>
-          <p className="details_recommend_you">あなたにおすすめ</p>
-          {/* <div className="tab_display">
-            {forYou.map((item, index) => (
-              <NavLink to={`/BookExplanation/${more}/${item.id}`} key={index}>
-                <DetailsRecommend root={item.src} title={item.title} />
-              </NavLink>
-            ))}
-          </div> */}
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
-          コメント入力
-          <input type="text" onChange={getComment} />
-          <button onClick={commentAdd}>ボタン</button>
+          <div className={classes.comment}>
+            <TextField
+              id="standard-basic"
+              label="コメントを入力"
+              onChange={getComment}
+              value={commentContent}
+            />
+          </div>
+          <div className="comment_submit">
+            <button onClick={cancel} className="cancel">
+              キャンセル
+            </button>
+            <button onClick={commentAdd} className="submit">
+              送信
+            </button>
+          </div>
           {commentView.map((users: UserKeys, index: number) => (
             <div className="comment_box" key={index}>
               <div>
                 <img src={users.src} alt="usericon" />
               </div>
               <div>
-                <div className="user_name_date_box">
-                  <p>{users.userName}</p>
-                  <p>{users.date}</p>
-                </div>
-                <p className="">{users.comment}</p>
+                <p className="comment_user_name">{users.userName}</p>
+                <p className="comment">{users.comment}</p>
+                <p className="date">{users.date}</p>
               </div>
             </div>
           ))}
-          {console.log(commentView)}
         </TabPanel>
       </SwipeableViews>
       <div className="readnav">

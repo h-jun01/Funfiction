@@ -6,7 +6,6 @@ import Books from "../../containers/Books";
 import BookExplanation from "../../containers/BookExplanation";
 import Read from "../../containers/Read";
 import PointBuy from "../../containers/PointBuy";
-import Purchasehistory from "../../containers/Purchasehistory";
 import Acceptance from "../../containers/Acceptance";
 import TermsOfService from "../../containers/TermsOfService";
 import PrivacyPolicy from "../../containers/PrivacyPolicy";
@@ -21,50 +20,46 @@ export const pages: PageItem[] = [
   {
     exact: true,
     path: "/",
-    component: ContainerHome
+    component: ContainerHome,
   },
   {
     path: "/Search",
-    component: Search
+    component: Search,
   },
   {
     path: "/Library",
-    component: Library
+    component: Library,
   },
   {
     path: "/MyPage",
-    component: MyPage
+    component: MyPage,
   },
   {
     path: "/Books/:code",
-    component: Books
+    component: Books,
   },
   {
     path: "/BookExplanation/:code/:details",
-    component: BookExplanation
+    component: BookExplanation,
   },
   {
     path: "/Read",
-    component: Read
+    component: Read,
   },
   {
     path: "/PointBuy",
-    component: PointBuy
-  },
-  {
-    path: "/ContaonerPurchasehistory",
-    component: Purchasehistory
+    component: PointBuy,
   },
   {
     path: "/ContainerAcceptance",
-    component: Acceptance
+    component: Acceptance,
   },
   {
     path: "/TermsOfService",
-    component: TermsOfService
+    component: TermsOfService,
   },
   {
     path: "/PrivacyPolicy",
-    component: PrivacyPolicy
-  }
+    component: PrivacyPolicy,
+  },
 ];

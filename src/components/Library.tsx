@@ -5,7 +5,6 @@ import { IKeys } from "./Home";
 interface LibraryIProps {
   favoriteBook: IKeys[];
   libraryNoData: string;
-  more: string[];
 }
 
 const Library: React.FC<LibraryIProps> = ({ ...props }) => {
@@ -14,7 +13,7 @@ const Library: React.FC<LibraryIProps> = ({ ...props }) => {
       <p className="library_no_data">{props.libraryNoData}</p>
       <div className="library_layout">
         {props.favoriteBook.map((book: IKeys, index: number) => (
-          <NavLink to={`/BookExplanation/${props.more}/${book.id}`} key={index}>
+          <NavLink to={`/BookExplanation/comic/${book.id}`} key={index}>
             <div className="library_box">
               <div className="library_wrap">
                 <img src={book.src} alt="book" />

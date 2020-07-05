@@ -46,3 +46,23 @@
     line-height: 0.9rem;
   }
 }
+
+/***************     タブレット     ***************/
+@include screen-mq(tab) {
+  .point_buy_wrap {
+    width: 70vw;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/***************     PC     ***************/
+@include screen-mq(pc) {
+  .point_buy_wrap {
+    width: 50vw;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

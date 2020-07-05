@@ -1,6 +1,7 @@
 import * as React from "react";
 import Box from "./Box";
 import Slider from "./Slider";
+import Footer from "./Footer";
 import { CardLayoutIProps } from "./CardLayout";
 
 export interface IKeys {
@@ -19,33 +20,30 @@ export interface HomeItem {
   more: string;
   component: React.FC<CardLayoutIProps>;
   array: IKeys[];
-  details: string[];
   grid: string;
 }
 
 interface HomeIProps {
-  more: string[];
   items: HomeItem[];
 }
 
 const Home: React.FC<HomeIProps> = ({ ...props }) => {
   return (
-    <React.Fragment>
+    <div className="home_layout">
       <Slider />
       <div className="box_grid_container">
         {props.items.map((item: HomeItem, index: number) => (
           <Box
             topic={item.topic}
-            more={item.more}
             component={item.component}
             array={item.array}
-            details={item.details}
             grid={item.grid}
             key={index}
           />
         ))}
       </div>
-    </React.Fragment>
+      <Footer />
+    </div>
   );
 };
 

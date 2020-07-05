@@ -1,12 +1,7 @@
 import * as React from "react";
-// import * as H from "history";
 import { connect } from "react-redux";
 import { readBar } from "../actions/navigation";
 import { manga_src } from "../components/config/ReadData";
-
-// interface ContainerIProps {
-//   history: H.History;
-// }
 
 const Read = ({ readBar, ...props }) => {
   const mainWrapRef = React.createRef();
@@ -19,6 +14,11 @@ const Read = ({ readBar, ...props }) => {
   const [underAnimation, setUnderAnimation] = React.useState();
   const [maxPageModal, setMaxPageModal] = React.useState(true);
   const [nowPageModal, setNowPageModal] = React.useState(false);
+
+  const shareTwitter =
+    "https://twitter.com/intent/tweet?text=https://hew-fansa.web.app/";
+  const shareFaceBook =
+    "http://www.facebook.com/share.php?u=https://hew-fansa.web.app/";
 
   React.useEffect(() => {
     readBar();
@@ -33,14 +33,14 @@ const Read = ({ readBar, ...props }) => {
   };
 
   const tanim = {
-    animation: topAnimation
+    animation: topAnimation,
   };
   const uanim = {
-    animation: underAnimation
+    animation: underAnimation,
   };
   const nowPageSumSrtyle = {
     top: topPosition,
-    left: leftPosition
+    left: leftPosition,
   };
 
   const readPage_start = () => {
@@ -49,11 +49,11 @@ const Read = ({ readBar, ...props }) => {
       window.innerWidth * sliderBarRef.current.max;
   };
 
-  const readPage_changePage = e => {
+  const readPage_changePage = (e) => {
     const i = e.target.value;
     //PCの場合
     if (window.innerWidth > 1024) {
-      const web_width = window.innerWidth * 0.7; //ページのめくれ方？
+      const web_width = window.innerWidth * 0.7;
       mainWrapRef.current.scrollLeft = (web_width / 2) * i;
     }
     //タブレットの場合
@@ -79,7 +79,7 @@ const Read = ({ readBar, ...props }) => {
         mainWrapRef.current.scrollLeft / ((window.innerWidth * 0.7) / 2);
       setPageNum(sliderBarRef.current.max - sliderBarRef.current.value + 1);
       if (mainWrapRef.current.scrollLeft === 0) {
-        setPageNum("lastpage");
+        setPageNum("読了");
         setMaxPageModal(false);
         setTopPosition("65px");
         setLeftPosition("0");
@@ -152,7 +152,7 @@ const Read = ({ readBar, ...props }) => {
     setNowPageModal(false);
   };
 
-  const change_page = e => {
+  const change_page = (e) => {
     //PCの場合
     if (window.innerWidth > 1024) {
       if (e.pageX <= window.innerWidth * 0.15 + (window.innerWidth * 0.7) / 5) {
@@ -183,8 +183,6 @@ const Read = ({ readBar, ...props }) => {
           setBar(true);
         }
       }
-      console.log(mainWrapRef.current.scrollLeft);
-      console.log(sliderBarRef.current.value);
     }
     //タッブレットの場合
     if (window.innerWidth > 481) {
@@ -248,11 +246,7 @@ const Read = ({ readBar, ...props }) => {
     <div className="read_container">
       {/* ヘッダー部分 */}
       <div className="manga_top_lavel" style={tanim}>
-        <img
-          src="/header-images/back_button.svg"
-          alt="backButton"
-          onClick={back}
-        />
+        <img src="/next.svg" alt="backButton" onClick={back} width="10" />
         <h1 className="read_title">Spring Works</h1>
       </div>
 
@@ -264,19 +258,32 @@ const Read = ({ readBar, ...props }) => {
         ref={mainWrapRef}
       >
         <div className="finish_page">
-          {/* <div className="okinituika">
-            <i className="far fa-star"></i>
-            <p>お気に入りに追加</p>
+          <div className="share">
+            <div className="twitter">
+              <i className="fab fa-twitter"></i>
+              <p>
+                <a
+                  href={shareTwitter}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Twitterでシェア
+                </a>
+              </p>
+            </div>
+            <div className="facebooook">
+              <i className="fab fa-facebook"></i>
+              <p>
+                <a
+                  href={shareFaceBook}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Facebookでシェア
+                </a>
+              </p>
+            </div>
           </div>
-          <div className="tuita">
-            <i class="fab fa-twitter"></i>
-            <p>Twitterでシェア</p>
-          </div>
-          <div className="facebooook">
-            <i class="fab fa-facebook"></i>
-            <p>Facebookでシェア</p>
-          </div> */}
-          <p>どくりょ</p>
         </div>
         {manga_src.map((value, i) => (
           <img src={value} alt="presentation" className="manga_main" key={i} />
@@ -321,8 +328,8 @@ const Read = ({ readBar, ...props }) => {
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  readBar: () => dispatch(readBar())
+const mapDispatchToProps = (dispatch) => ({
+  readBar: () => dispatch(readBar()),
 });
 
 export default connect(null, mapDispatchToProps)(Read);

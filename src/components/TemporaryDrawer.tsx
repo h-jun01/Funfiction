@@ -6,27 +6,38 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 import { makeStyles } from "@material-ui/core/styles";
+import { NavLink } from "react-router-dom";
+
+export interface PageItem {
+  name: string;
+  icon: React.FC;
+  component: React.FC;
+}
+
+interface TemporaryDrawerIProsp {
+  pageItem: PageItem[];
+  userName: string;
+  point: number;
+  disabled: boolean;
+}
 
 const useStyles: () => Record<"list" | "fullList", string> = makeStyles({
   list: {
-    width: 350
+    width: 350,
   },
   fullList: {
-    width: "auto"
-  }
+    width: "auto",
+  },
 });
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
-const TemporaryDrawer: React.FC = () => {
+const TemporaryDrawer: React.FC<TemporaryDrawerIProsp> = ({ ...props }) => {
   const classes = useStyles();
   const [state, setState] = React.useState<{ [s: string]: boolean }>({
-    left: false
+    left: false,
   });
 
   const toggleDrawer = (anchor: Anchor, open: boolean) => (
@@ -47,32 +58,42 @@ const TemporaryDrawer: React.FC = () => {
   const list = (anchor: Anchor) => (
     <div
       className={clsx(classes.list, {
-        [classes.fullList]: anchor === "top" || anchor === "bottom"
+        [classes.fullList]: anchor === "top" || anchor === "bottom",
       })}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      // onClick={toggleDrawer(anchor, false)}
+      // onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map(
-          (text: string, index: number) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          )
-        )}
-      </List>
+      <div className="drawer_user">
+        <div className="user_info">
+          <i className="fas fa-user"></i>
+        </div>
+        <div>
+          <p className="user_name">{props.userName}</p>
+          <p className="drawer_user_point">保有ポイント</p>
+          <div className="drawer_point">
+            <img src="/icons/coin.png" alt="coin" />
+            <p className="user_point_view">{props.point}</p>
+          </div>
+          <NavLink to="/PointBuy">
+            <button
+              disabled={props.disabled}
+              className="user_point_buy"
+              onClick={toggleDrawer(anchor, false)}
+            >
+              ポイント購入
+            </button>
+          </NavLink>
+        </div>
+      </div>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text: string, index: number) => (
-          <ListItem button key={text}>
+        {props.pageItem.map((item: PageItem) => (
+          <ListItem button key={item.name}>
             <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              <item.icon />
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <item.component />
           </ListItem>
         ))}
       </List>

@@ -1,9 +1,14 @@
 import { actionTypes, UnionedAction } from "../actions/index";
 
-const initialstate = {
+interface InitalState {
+  userName: string;
+  point: number;
+  uid: string;
+}
+const initialstate: InitalState = {
   userName: "ゲスト",
   point: 0,
-  uid: ""
+  uid: "",
 };
 
 export const myPageReducer = (state = initialstate, action: UnionedAction) => {
@@ -11,17 +16,17 @@ export const myPageReducer = (state = initialstate, action: UnionedAction) => {
     case actionTypes.SYSTEM_USER_NAME_VIEW:
       return {
         ...state,
-        userName: action.payload.userName
+        userName: action.payload.userName,
       };
     case actionTypes.SYSTEM_POINT_VIEW:
       return {
         ...state,
-        point: action.payload.point
+        point: action.payload.point,
       };
     case actionTypes.SYSTEM_UID_VIEW:
       return {
         ...state,
-        uid: action.payload.uid
+        uid: action.payload.uid,
       };
     default:
       return state;

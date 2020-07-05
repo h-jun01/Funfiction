@@ -5,8 +5,6 @@ import FeaturedLayout from "../components/FeaturedLayout";
 import Home, { IKeys, HomeItem } from "../components/Home";
 import { connect } from "react-redux";
 import { clearState } from "../actions/navigation";
-import { BookData } from "../components/config/BookData";
-import { db } from "../firebase/firebase";
 import { setBookData } from "../actions/bookExplanation";
 import { Action, Dispatch } from "redux";
 import { UnionedAction, allState } from "../actions/index";
@@ -27,20 +25,6 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
   React.useEffect(() => {
     clearState();
   }, [clearState]);
-
-  React.useEffect(() => {
-    let bookDataArray: Array<{ [s: string]: string | number }> = [];
-    const getFireData = async () => {
-      const querySnapshot = await db.collection("books").orderBy("id").get();
-      querySnapshot.forEach((doc) => {
-        bookDataArray.push(doc.data());
-      });
-      setBookData(bookDataArray);
-    };
-    getFireData();
-  }, [setBookData]);
-
-  const more = Object.keys(BookData);
 
   const recommendes: IKeys[] = bookData.slice(0, 10);
   const newWorks: IKeys[] = bookData.slice(15, 25);
@@ -67,7 +51,6 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
       more: "/books/AllComics",
       component: CardLayout,
       array: recommendes,
-      details: more,
       grid: "grid_item1",
     },
     {
@@ -75,7 +58,6 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
       more: "/books/AllComics",
       component: CardLayout,
       array: newWorks,
-      details: more,
       grid: "grid_item2",
     },
     {
@@ -83,7 +65,6 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
       more: "/books/AllComics",
       component: RankingLayout,
       array: ranking,
-      details: more,
       grid: "grid_item3",
     },
     {
@@ -91,7 +72,6 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
       more: "/books/AllComics",
       component: featuredComponent,
       array: featured1,
-      details: more,
       grid: "grid_item4",
     },
     {
@@ -99,14 +79,11 @@ const ContainerHome: React.FC<ContainerHomeIProps> = ({
       more: "/books/AllComics",
       component: featuredComponent,
       array: featured2,
-      details: more,
       grid: "grid_item5",
     },
   ];
 
-  console.log(bookData);
-
-  return <Home more={more} items={items} />;
+  return <Home items={items} />;
 };
 
 const mapStateToProps = (state: allState) => {

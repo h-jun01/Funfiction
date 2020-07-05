@@ -1,14 +1,24 @@
 import * as React from "react";
 import Auth from "../containers/Auth";
 import Registe from "../containers/Registe";
+import Acceptance from "../containers/Acceptance";
+import CheeringHistory from "../containers/CheeringHistory";
+import Information from "./Information";
 import { NavLink } from "react-router-dom";
 
 interface MyPageIProps {
   userName: string;
   point: number;
+  disabled: boolean;
+  logout: () => void;
 }
 
-const MyPage: React.FC<MyPageIProps> = ({ userName, point }) => {
+const MyPage: React.FC<MyPageIProps> = ({
+  userName,
+  point,
+  disabled,
+  logout,
+}) => {
   return (
     <React.Fragment>
       <div className="mypage_height">
@@ -24,45 +34,39 @@ const MyPage: React.FC<MyPageIProps> = ({ userName, point }) => {
               <p className="user_point_view">{point}</p>
             </div>
             <NavLink to="/PointBuy">
-              <button className="user_point_buy">ポイント購入</button>
+              <button className="user_point_buy" disabled={disabled}>
+                ポイント購入
+              </button>
             </NavLink>
           </div>
         </div>
 
         <div className="user_box">
           <div className="user_information">
+            <i className="fas fa-user-plus"></i>
             <Registe />
           </div>
           <div className="user_point_history">
-            <Auth />
+            <i className="fas fa-sign-in-alt"></i>
+            {disabled ? (
+              <Auth />
+            ) : (
+              <NavLink to="/">
+                <p onClick={logout}>ログアウト</p>
+              </NavLink>
+            )}
           </div>
           <div className="user_support_box">
             <i className="fas fa-info-circle"></i>
-            <p>お知らせ</p>
+            <Information />
           </div>
           <div className="user_post">
             <i className="fas fa-history"></i>
-            <p>ポイント履歴</p>
+            <CheeringHistory />
           </div>
           <div className="user_contact">
             <i className="fas fa-gift"></i>
-            <p>受け取りBOX</p>
-          </div>
-          <div className="user_bank">
-            <i className="fas fa-envelope"></i>
-            <p>お問い合わせ</p>
-          </div>
-          <div className="user_config">
-            <i className="fas fa-file-medical"></i>
-            <p>投稿申請</p>
-          </div>
-          <div className="user_auth">
-            <i className="far fa-credit-card"></i>
-            <p>銀行口座登録</p>
-          </div>
-          <div className="user_reg">
-            <i className="fas fa-cog"></i>
-            <p>設定</p>
+            <Acceptance />
           </div>
         </div>
 

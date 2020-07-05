@@ -1,3 +1,7 @@
+.home_layout {
+  min-height: 100vh;
+}
+
 .grid_item1,
 .grid_item2,
 .grid_item3,
@@ -121,5 +125,29 @@
   .image_layout {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .drawer_user {
+    display: flex;
+    margin: 30px 0;
+  }
+
+  .drawer_point {
+    display: flex;
+    margin-bottom: 7px;
+    img {
+      height: 20px;
+    }
+    p {
+      line-height: 20px;
+      margin-left: 4px;
+    }
+  }
+
+  .drawer_user_point {
+    margin-bottom: 7px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #808080;
   }
 }

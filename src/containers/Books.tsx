@@ -1,35 +1,39 @@
 import React, { useEffect } from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { layoutChange } from "../actions/navigation";
-import { BookData } from "../components/config/BookData";
+import { UnionedAction, allState } from "../actions/index";
+import { IKeys } from "../components/Home";
+import { Action, Dispatch } from "redux";
 import BookList from "../components/BookList";
 
-type BooksProps = { layoutChange(): { type: string } } & RouteComponentProps<{
+type BooksProps = {
+  layoutChange: () => UnionedAction;
+  bookData: IKeys[];
+} & RouteComponentProps<{
   code: string;
 }>;
 
-const Books: React.FC<BooksProps> = ({ match, layoutChange }) => {
-  const codes = Object.keys(BookData);
-  const targetCode = match.params.code;
-  console.log(targetCode);
-
+const Books: React.FC<BooksProps> = ({ match, layoutChange, bookData }) => {
   useEffect(() => {
     layoutChange();
   }, [layoutChange]);
 
-  return codes.includes(targetCode) ? (
+  return (
     <React.Fragment>
-      <BookList books={BookData[targetCode].comics} targetCode={targetCode} />
+      <BookList books={bookData} />
     </React.Fragment>
-  ) : (
-    <Redirect to="/" />
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  layoutChange: () => dispatch(layoutChange())
+const mapStateToProps = (state: allState) => {
+  return {
+    bookData: state.bookExplanationReducer.bookData,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  layoutChange: () => dispatch(layoutChange()),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(Books));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Books));

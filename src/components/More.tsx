@@ -1,7 +1,6 @@
 import * as React from "react";
 
 interface IPropsMore {
-  // Books: Book[];
   title: string;
   word: string;
   creator: string;
@@ -12,7 +11,7 @@ const More: React.FC<IPropsMore> = ({ ...props }) => {
   return (
     <div className="Mores">
       <div>
-        <img src={props.src} alt="a" width="100" />
+        <img src={props.src} alt="presentation" width="100" />
       </div>
       <div className="chararea">
         <p style={{ fontWeight: "bold" }}>{props.title}</p>

@@ -5,18 +5,13 @@ import { IKeys } from "./Home";
 
 export interface CardLayoutIProps {
   array: IKeys[];
-  more?: string[];
-  details: any;
 }
 
 const CardLayout: React.FC<CardLayoutIProps> = ({ ...props }) => {
   return (
     <div className="image_layout">
       {props.array.map((item: IKeys, index: number) => (
-        <NavLink
-          to={`/BookExplanation/${props.details}/${item.id}`}
-          key={index}
-        >
+        <NavLink to={`/BookExplanation/comic/${item.id}`} key={index}>
           <ImgMediaCard
             image={item.src}
             title={item.title}

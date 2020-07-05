@@ -14,8 +14,8 @@ interface IPropsbottom {
 const BottomNav: React.FC<IPropsbottom> = ({ ...props }) => {
   const useStyles: () => Record<"root", string> = makeStyles({
     root: {
-      justifyContent: "space-evenly"
-    }
+      justifyContent: "space-evenly",
+    },
   });
   const classes: Record<"root", string> = useStyles();
 

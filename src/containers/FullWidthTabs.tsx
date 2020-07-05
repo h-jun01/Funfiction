@@ -11,7 +11,7 @@ interface ContainerFullWidthTabs {
   uid: string;
   bookDetailsComicID: number;
   setCommentView: (comment: string) => UnionedAction;
-  commentView: Array<UserKeys>;
+  commentView: UserKeys[];
 }
 
 const ContainerFullWidthTabs: React.FC<ContainerFullWidthTabs> = ({
@@ -20,8 +20,6 @@ const ContainerFullWidthTabs: React.FC<ContainerFullWidthTabs> = ({
   setCommentView,
   commentView,
 }) => {
-  console.log(commentView);
-
   React.useEffect(() => {
     const getFireData = async () => {
       const querySnapshot = await db
@@ -29,7 +27,7 @@ const ContainerFullWidthTabs: React.FC<ContainerFullWidthTabs> = ({
         .where("id", "==", bookDetailsComicID)
         .get();
       querySnapshot.forEach((doc) => {
-        setCommentView(doc.data().comment);
+        setCommentView(doc.data().comment.reverse());
       });
     };
     getFireData();
@@ -38,48 +36,79 @@ const ContainerFullWidthTabs: React.FC<ContainerFullWidthTabs> = ({
   //コメント内容の取得
   const [commentContent, setCommentContent] = React.useState("");
   const getComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentContent(e.target.value);
+    const value = e.target.value;
+    setCommentContent(value);
+  };
+
+  //キャンセル
+  const cancel = () => {
+    setCommentContent("");
   };
 
   //コメント処理
   const commentAdd = async () => {
-    await db
-      .collection("users")
-      .where("uid", "==", uid)
-      .orderBy("ID")
-      .get()
-      .then(async (d) => {
-        const commentUserName: string = await d.docs[0].data().Name;
-        const commentUserPhoto: string = await d.docs[0].data().src;
-        await db
-          .collection("books")
-          .where("id", "==", bookDetailsComicID)
-          .get()
-          .then(async (c) => {
-            await db
-              .collection("books")
-              .doc(c.docs[0].id)
-              .update({
-                comment: firebase.firestore.FieldValue.arrayUnion({
-                  date: datetime(),
-                  userName: commentUserName,
-                  src: commentUserPhoto,
-                  comment: commentContent,
-                }),
-              });
-            await db
-              .collection("books")
-              .where("id", "==", bookDetailsComicID)
-              .get()
-              .then(async (d) => {
-                await setCommentView(d.docs[0].data().comment);
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        setCommentContent("");
-      });
+    if (uid !== "") {
+      await db
+        .collection("users")
+        .where("uid", "==", uid)
+        .orderBy("ID")
+        .get()
+        .then(async (d) => {
+          const commentUserName: string = await d.docs[0].data().Name;
+          const commentUserPhoto: string = await d.docs[0].data().src;
+          await db
+            .collection("books")
+            .where("id", "==", bookDetailsComicID)
+            .get()
+            .then(async (c) => {
+              await db
+                .collection("books")
+                .doc(c.docs[0].id)
+                .update({
+                  comment: firebase.firestore.FieldValue.arrayUnion({
+                    date: datetime(),
+                    userName: commentUserName,
+                    src: commentUserPhoto,
+                    comment: commentContent,
+                  }),
+                });
+              await db
+                .collection("books")
+                .where("id", "==", bookDetailsComicID)
+                .get()
+                .then((d) => {
+                  setCommentView(d.docs[0].data().comment.reverse());
+                });
+            });
+        });
+    } else {
+      await db
+        .collection("books")
+        .where("id", "==", bookDetailsComicID)
+        .get()
+        .then(async (c) => {
+          await db
+            .collection("books")
+            .doc(c.docs[0].id)
+            .update({
+              comment: firebase.firestore.FieldValue.arrayUnion({
+                date: datetime(),
+                userName: "ゲスト",
+                src:
+                  "https://firebasestorage.googleapis.com/v0/b/hew-fansa.appspot.com/o/default_user.png?alt=media&token=3d539089-401d-463b-8fc9-7d5aa7b9f70c",
+                comment: commentContent,
+              }),
+            });
+          await db
+            .collection("books")
+            .where("id", "==", bookDetailsComicID)
+            .get()
+            .then(async (d) => {
+              setCommentView(d.docs[0].data().comment.reverse());
+            });
+        });
+    }
+    setCommentContent("");
   };
 
   return (
@@ -87,6 +116,8 @@ const ContainerFullWidthTabs: React.FC<ContainerFullWidthTabs> = ({
       getComment={getComment}
       commentAdd={commentAdd}
       commentView={commentView}
+      cancel={cancel}
+      commentContent={commentContent}
     />
   );
 };

@@ -31,7 +31,7 @@
   padding-top: constant(safe-area-inset-top);
   padding-top: env(safe-area-inset-top);
   .MuiSvgIcon-root {
-    font-size: 1.9rem;
+    font-size: 1.5rem;
     color: #fff;
   }
 }
@@ -114,7 +114,7 @@
   }
 
   .pc_search {
-    margin-left: 10px;
+    margin-left: 25px;
     input {
       width: 100vw;
       max-width: 678px;
@@ -207,6 +207,16 @@
       i {
         color: $site_main_color;
       }
+    }
+  }
+
+  .pc_favorite {
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    svg {
+      color: #fff;
     }
   }
 }

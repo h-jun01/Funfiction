@@ -24,7 +24,7 @@ const ContainerBottomNav: React.FC<IPropsbottom> = ({ ...props }) => {
 
 const mapStateToProps = (state: allState) => {
   return {
-    isBottomNav: state.navigationReducer.isBottomNav
+    isBottomNav: state.navigationReducer.isBottomNav,
   };
 };
 
